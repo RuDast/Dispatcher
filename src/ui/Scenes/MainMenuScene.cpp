@@ -4,9 +4,12 @@
 
 using namespace sf;
 using namespace std;
-
 MainMenuScene::MainMenuScene() {
     font.loadFromFile("../src/resources/font/main_font.ttf");
+
+    background_.setSize(Vector2f(1280,720));
+    background_.setFillColor(Color(255,0,0));
+
     btns_.push_back(Button({250, 120},
                            {345, 282},
                            "LEVEL 1",
@@ -26,6 +29,8 @@ void MainMenuScene::setRatBtnCallback(const std::function<void()> &callback) {
 }
 
 void MainMenuScene::render(RenderWindow &window) {
+    window.draw(background_);
+
     for (auto &btn: btns_) {
         window.draw(btn);
     }

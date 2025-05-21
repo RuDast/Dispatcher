@@ -12,6 +12,8 @@ private:
     std::vector<Button> btns_;
     sf::Font font;
     std::function<void()> rating_button_callback_;
+    sf::RectangleShape background_;
+
 public:
     void setRatBtnCallback(const std::function<void()>& callback);
 
