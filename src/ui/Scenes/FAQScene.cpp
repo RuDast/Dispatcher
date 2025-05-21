@@ -1,11 +1,10 @@
-#include "SettingsScene.h"
-
+#include "FAQScene.h"
 #include <iostream>
 
 using namespace sf;
 using namespace std;
 
-SettingsScene::SettingsScene()
+FAQScene::FAQScene()
 {
     font.loadFromFile("../src/resources/font/main_font.ttf");
     btns_.push_back(Button({250, 120},
@@ -17,23 +16,23 @@ SettingsScene::SettingsScene()
                            }));
 }
 
-void SettingsScene::setBackBtnCallback(const std::function<void()> &callback)
+void FAQScene::setBackBtnCallback(const std::function<void()> &callback)
 {
     back_btn_callback_ = callback;
 }
 
 
-void SettingsScene::handleInput(RenderWindow &window, const Event &event) {
+void FAQScene::handleInput(RenderWindow &window, const Event &event) {
     for (auto &btn: btns_) {
         btn.handleEvent(event);
     }
 }
 
-void SettingsScene::update(float deltaTime) {
+void FAQScene::update(float deltaTime) {
     //cerr << "[DEBUG] SettingsScene::update();" << endl;
 }
 
-void SettingsScene::render(RenderWindow &window) {
+void FAQScene::render(RenderWindow &window) {
     for (auto &btn: btns_) {
         window.draw(btn);
     }

@@ -11,14 +11,29 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
                        game::win_title),
                main_menu_scene_(),
                rating_scene_(),
-               settings_scene_() {
-    main_menu_scene_.setRatBtnCallback([this]() {
+               settings_scene_(), faq_scene_() {
+    main_menu_scene_.setRatingBtnCallback([this]() {
         this->switchToRatingScene();
     });
+    main_menu_scene_.setSettingsBtnCallback([this]() {
+    this->switchToSettingsScene();
+    });
+    main_menu_scene_.setFAQBtnCallback([this]() {
+    this->switchToFAQScene();
+    });
+
+
     rating_scene_.setBackBtnCallback([this]() {
         this->switchToMainScene();
     });
+    settings_scene_.setBackBtnCallback([this]() {
+        this->switchToMainScene();
+    });
+    faq_scene_.setBackBtnCallback([this]() {
+    this->switchToMainScene();
+});
     current_scene_ = &main_menu_scene_;
+
     run();
 }
 
@@ -61,6 +76,16 @@ void Game::render() {
 
 void Game::switchToRatingScene() {
     current_scene_ = &rating_scene_;
+}
+
+void Game::switchToSettingsScene()
+{
+    current_scene_ = &settings_scene_;
+}
+
+void Game::switchToFAQScene()
+{
+    current_scene_ = &faq_scene_;
 }
 
 void Game::switchToMainScene() {

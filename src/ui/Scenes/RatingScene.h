@@ -3,7 +3,6 @@
 #include "../Scene.h"
 #include "../../utils/Button.h"
 
-
 class RatingScene : public Scene {
 public:
     RatingScene();
@@ -22,6 +21,5 @@ private:
     std::vector<Button> btns_;
 
 };
-
 
 #endif //RATINGSCENE_H
