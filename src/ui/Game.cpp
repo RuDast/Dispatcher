@@ -9,14 +9,19 @@ using namespace std;
 
 Game::Game() : window_(VideoMode(game::win_width, game::win_height),
                        game::win_title),
-               mainMenuScene()
-{
-    current_scene_ = &mainMenuScene;
+               main_menu_scene_(),
+               rating_scene_(),
+               settings_scene_() {
+    current_scene_ = &main_menu_scene_;
+    run();
 }
 
 void Game::run() {
+    Clock clock;
     while (window_.isOpen()) {
+        const float dt = clock.restart().asSeconds();
         processEvents();
+        update(dt);
         render();
     }
 }
@@ -34,10 +39,24 @@ void Game::processEvents() {
     }
 }
 
+void Game::update(const float dt) {
+    test_timer_ += dt;
+    if (test_timer_ > 5) {
+        switchToRatingScene();
+    }
+    if (current_scene_) {
+        current_scene_->update(dt);
+    }
+}
+
 void Game::render() {
     window_.clear();
     if (current_scene_) {
         current_scene_->render(window_);
     }
     window_.display();
+}
+
+void Game::switchToRatingScene() {
+    current_scene_ = &rating_scene_;
 }

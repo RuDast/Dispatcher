@@ -6,6 +6,7 @@
 class MainMenuScene : public Scene {
 public:
     MainMenuScene();
+
 private:
     std::vector<sf::RectangleShape> btns_; // TODO поменять на button
 public:
@@ -15,7 +16,6 @@ public:
 
     void update(float deltaTime) override;
 };
-
 
 
 #endif //MAINMENUSCENE_H

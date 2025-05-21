@@ -17,9 +17,9 @@ void MainMenuScene::render(RenderWindow &window) {
 }
 
 void MainMenuScene::handleInput(RenderWindow &window, const Event &event) {
-    cout << 1;
+    cerr << "[DEBUG] MainMenuScene::handleInput();" << endl;
 }
 
 void MainMenuScene::update(float deltaTime) {
-    cout << 2;
+    cerr << "[DEBUG] MainMenuScene::update();" << endl;
 }
