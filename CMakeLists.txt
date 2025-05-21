@@ -14,8 +14,7 @@ include(local_config.cmake OPTIONAL)
 
 find_package(SFML 2.5.1 COMPONENTS graphics REQUIRED)
 
-add_executable(${PROJECT_NAME} ${PROJECT_SOURCES}
-        src/utils/Button.cpp)
+add_executable(${PROJECT_NAME} ${PROJECT_SOURCES})
 
 target_link_libraries(Dispatcher sfml-graphics sfml-audio)
 # file(COPY resources DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
