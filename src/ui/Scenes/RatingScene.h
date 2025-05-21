@@ -1,11 +1,14 @@
 #ifndef RATINGSCENE_H
 #define RATINGSCENE_H
 #include "../Scene.h"
+#include "../../utils/Button.h"
 
 
 class RatingScene : public Scene {
 public:
     RatingScene();
+
+    void setBackBtnCallback(const std::function<void()>& callback);
 
     void handleInput(sf::RenderWindow &window, const sf::Event &event) override;
 
@@ -14,7 +17,10 @@ public:
     void render(sf::RenderWindow &window) override;
 
 private:
-    sf::RectangleShape test_;
+    sf::Font font;
+    std::function<void()> back_btn_callback_;
+    std::vector<Button> btns_;
+
 };
 
 
