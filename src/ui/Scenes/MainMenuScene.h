@@ -7,6 +7,7 @@
 class MainMenuScene : public Scene {
 public:
     MainMenuScene();
+
 private:
     std::vector<Button> btns_;
     sf::Font font;
@@ -19,7 +20,6 @@ public:
 
     void print() const;
 };
-
 
 
 #endif //MAINMENUSCENE_H
