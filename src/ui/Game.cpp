@@ -1,7 +1,7 @@
 #include "Game.h"
-
 #include <iostream>
 
+#include "../core/structures.h"
 #include "../utils/Config.h"
 
 using namespace sf;
@@ -32,6 +32,9 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
     faq_scene_.setBackBtnCallback([this]() {
     this->switchToMainScene();
 });
+    main_menu_scene_.setLevSelCallback([this](const unsigned level) {
+        this->startLevel(level);
+    });
     current_scene_ = &main_menu_scene_;
 
     run();
@@ -90,4 +93,24 @@ void Game::switchToFAQScene()
 
 void Game::switchToMainScene() {
     current_scene_ = &main_menu_scene_;
+}
+
+void Game::startLevel(unsigned level) {
+    delete game_scene_;
+    LevelConfig cfg;
+
+    cfg.resources_ = {
+        { ResourceType::Type1, 6 },
+        { ResourceType::Type2, 3 }
+    };
+
+    cfg.processes_ = {
+        { 1, { 5, 2 } },
+        { 2, { 2, 3 } },
+        { 3, { 6, 3 } },
+        { 4, { 1, 1 } }
+    };
+
+    game_scene_ = new GameScene(window_, cfg);
+    current_scene_ = game_scene_;
 }

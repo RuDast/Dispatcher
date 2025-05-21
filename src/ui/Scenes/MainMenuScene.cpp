@@ -7,7 +7,13 @@ using namespace std;
 
 MainMenuScene::MainMenuScene() {
     font.loadFromFile("../src/resources/font/main_font.ttf");
-    btns_.push_back(Button({250, 120}, {345, 282},"LEVEL 1",font,[this]() {if (lvl1_button_callback_) lvl1_button_callback_();}));
+    btns_.push_back(Button({250, 120},
+                           {345, 282},
+                           "LEVEL 1",
+                           font,
+                           [this]() {
+                               if (levelSelectCallback_) levelSelectCallback_(1);
+                           }));
     btns_.push_back(Button({250, 120}, {605, 282}, "LEVEL 2", font, [this]() { this->print(); }));
     btns_.push_back(Button({250, 120}, {475, 412}, "LEVEL 3", font, [this]() { this->print(); }));
     btns_.push_back(Button({200, 100}, {990, 580}, "rating", font, [this]() { if (rating_button_callback_) rating_button_callback_(); }));
@@ -19,6 +25,10 @@ MainMenuScene::MainMenuScene() {
 void MainMenuScene::setRatingBtnCallback(const std::function<void()> &callback)
 {
     rating_button_callback_ = callback;
+}
+
+void MainMenuScene::setLevSelCallback(const std::function<void(int)> &callback) {
+    levelSelectCallback_ = callback;
 }
 
 void MainMenuScene::setLvl1BtnCallback(const std::function<void()> &callback)

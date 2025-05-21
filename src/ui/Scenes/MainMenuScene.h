@@ -13,10 +13,13 @@ private:
     sf::Font font;
     std::function<void()> lvl1_button_callback_;
     std::function<void()> rating_button_callback_;
+    std::function<void(int)> levelSelectCallback_;
     std::function<void()> settings_button_callback_;
     std::function<void()> faq_button_callback_;
 public:
     void setRatingBtnCallback(const std::function<void()>& callback);
+
+    void setLevSelCallback(const std::function<void(int)>& callback);
 
     void setLvl1BtnCallback(const std::function<void()>& callback);
 
