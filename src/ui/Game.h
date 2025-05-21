@@ -24,11 +24,13 @@ public:
 
     void processEvents();
 
-    void update(float dt);
+    void update(float dt) const;
 
     void render();
 
     void switchToRatingScene();
+
+    void switchToMainScene();
 };
 
 

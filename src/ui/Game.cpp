@@ -12,6 +12,12 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
                main_menu_scene_(),
                rating_scene_(),
                settings_scene_() {
+    main_menu_scene_.setRatBtnCallback([this]() {
+        this->switchToRatingScene();
+    });
+    rating_scene_.setBackBtnCallback([this]() {
+        this->switchToMainScene();
+    });
     current_scene_ = &main_menu_scene_;
     run();
 }
@@ -39,11 +45,7 @@ void Game::processEvents() {
     }
 }
 
-void Game::update(const float dt) {
-    test_timer_ += dt;
-    if (test_timer_ > 5) {
-        switchToRatingScene();
-    }
+void Game::update(const float dt) const {
     if (current_scene_) {
         current_scene_->update(dt);
     }
@@ -59,4 +61,8 @@ void Game::render() {
 
 void Game::switchToRatingScene() {
     current_scene_ = &rating_scene_;
+}
+
+void Game::switchToMainScene() {
+    current_scene_ = &main_menu_scene_;
 }
