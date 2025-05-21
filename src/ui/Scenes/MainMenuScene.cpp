@@ -15,14 +15,7 @@ MainMenuScene::MainMenuScene() {
     btns_.push_back(Button({200, 100}, {990, 20}, "settings", font, [this]() { if (settings_button_callback_) settings_button_callback_(); }));
 }
 
-void MainMenuScene::setRatingBtnCallback(const std::function<void()> &callback)
-{
-    rating_button_callback_ = callback;
-}
 
-void MainMenuScene::setLvl1BtnCallback(const std::function<void()> &callback)
-{
-    lvl1_button_callback_ = callback;
 }
 
 void MainMenuScene::setSettingsBtnCallback(const std::function<void()> &callback)
