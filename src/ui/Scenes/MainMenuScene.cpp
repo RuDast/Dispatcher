@@ -1,13 +1,20 @@
 #include "MainMenuScene.h"
-
+#include "../../utils/Button.h"
 #include <iostream>
 
 using namespace sf;
 using namespace std;
 
 MainMenuScene::MainMenuScene() {
-    btns_.emplace_back(Vector2f{100, 100});
-    btns_[0].setFillColor(Color::Blue); // TODO убрать
+    font.loadFromFile("C:/Users/abdul/CLionProjects/Dispatcher/src/resourses/font/aasa.ttf");
+    btns_.push_back(Button({250,120}, {345,282}, "LEVEL 1", font,  [this]() { this->print(); }));
+    btns_.push_back(Button({250,120}, {605,282}, "LEVEL 2", font,  [this]() { this->print(); }));
+    btns_.push_back(Button({250,120}, {475,412}, "LEVEL 3", font,  [this]() { this->print(); }));
+    btns_.push_back(Button({200,100}, {990,580}, "LEVEL 3", font,  [this]() { this->print(); }));
+    btns_.push_back(Button({200,100}, {990,470}, "LEVEL 3", font,  [this]() { this->print(); }));
+    btns_.push_back(Button({200,100}, {990,20}, "LEVEL 3", font,  [this]() { this->print(); }));
+
+
 }
 
 void MainMenuScene::render(RenderWindow &window) {
@@ -17,9 +24,17 @@ void MainMenuScene::render(RenderWindow &window) {
 }
 
 void MainMenuScene::handleInput(RenderWindow &window, const Event &event) {
-    cout << 1;
+    for(auto& btn : btns_)
+    {
+        btn.handleEvent(event);
+    }
 }
 
 void MainMenuScene::update(float deltaTime) {
     cout << 2;
+}
+
+void MainMenuScene::print() const
+{
+    cout<< 1;
 }
