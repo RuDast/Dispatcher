@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Scene.h"
+#include "Scenes/GameScene.h"
 #include "Scenes/FAQScene.h"
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/RatingScene.h"
@@ -16,6 +17,7 @@ class Game {
     SettingsScene settings_scene_;
     FAQScene faq_scene_;
     Scene *current_scene_ = nullptr;
+    GameScene *game_scene_ = nullptr;
 
     float test_timer_ = 0;
 
@@ -37,6 +39,8 @@ public:
     void switchToFAQScene();
 
     void switchToMainScene();
+
+    void startLevel(unsigned level);
 };
 
 
