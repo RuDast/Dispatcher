@@ -9,6 +9,12 @@
 #include "Scenes/RatingScene.h"
 #include "Scenes/SettingsScene.h"
 
+enum class GameStatus {
+    None = 0,
+    Fail = 1,
+    Success = 2,
+};
+
 
 class Game {
     sf::RenderWindow window_;
@@ -19,7 +25,15 @@ class Game {
     Scene *current_scene_ = nullptr;
     GameScene *game_scene_ = nullptr;
 
+    sf::RectangleShape background;
+    bool pendingEnd_ = false;
+
+    bool waitingEnd_ = false;
+    float endTimer_ = 0.f;
+
     float test_timer_ = 0;
+
+    GameStatus game_status_= GameStatus::None;
 
 public:
     Game();
@@ -28,7 +42,7 @@ public:
 
     void processEvents();
 
-    void update(float dt) const;
+    void update(float dt);
 
     void render();
 
@@ -41,6 +55,8 @@ public:
     void switchToMainScene();
 
     void startLevel(unsigned level);
+
+    void endLevel();
 };
 
 

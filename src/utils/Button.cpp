@@ -1,8 +1,5 @@
 #include "Button.h"
 
-// Button.cpp
-#include "Button.h"
-
 Button::Button(const sf::Vector2f& size,
                const sf::Vector2f& position,
                const sf::String& label,

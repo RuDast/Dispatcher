@@ -23,7 +23,7 @@ void SettingsScene::setBackBtnCallback(const std::function<void()> &callback)
 }
 
 
-void SettingsScene::handleInput(RenderWindow &window, const Event &event) {
+void SettingsScene::handleInput(const Event &event) {
     for (auto &btn: btns_) {
         btn.handleEvent(event);
     }

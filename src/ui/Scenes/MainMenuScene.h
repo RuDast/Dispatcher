@@ -29,11 +29,13 @@ public:
 
     void render(sf::RenderWindow &window) override;
 
-    void handleInput(sf::RenderWindow &window, const sf::Event &event) override;
+    void handleInput(const sf::Event &event) override;
 
     void update(float deltaTime) override;
 
     void print() const;
+
+    void reset();
 
 };
 

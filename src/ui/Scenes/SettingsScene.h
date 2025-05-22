@@ -9,7 +9,7 @@ public:
 
     void setBackBtnCallback(const std::function<void()>& callback);
 
-    void handleInput(sf::RenderWindow &window, const sf::Event &event) override;
+    void handleInput(const sf::Event &event) override;
 
     void update(float deltaTime) override;
 
