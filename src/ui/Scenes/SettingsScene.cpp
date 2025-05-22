@@ -17,25 +17,36 @@ SettingsScene::SettingsScene() : savedNickname("Player"), currentNickname("Playe
     }));
 
     // Кнопка сохранения
-    btns_.push_back(Button({200, 50}, {150, 300}, "Save", font, [this]() {
+    btns_.push_back(Button({200, 50}, {480, 400}, "Save", font, [this]() {
     if (!currentNickname.empty()) {
         savedNickname = currentNickname;
         if (Rating::isNicknameExists(savedNickname)) {
             notificationText.setString("Successful authorization!");
-            notificationText.setPosition(120, 270); // Подправляем позицию для нового текста
+            notificationText.setPosition(460, 360); // Подправляем позицию для нового текста
         } else {
             Rating::saveNickname(savedNickname);
             notificationText.setString("Nickname saved!");
-            notificationText.setPosition(150, 270);
+            notificationText.setPosition(500, 360);
         }
         showNotification = true;
         notificationTimer = 2.0f;
     }
+
 }));
+    btns_.push_back(Button({200, 50}, {50, 600}, "Clear Ratings", font, [this]() {
+    Rating::clearRatings();
+    showClearNotification = true;
+    clearNotificationTimer = 2.0f;
+}));
+
+
+
+
+
 
     // Поле ввода никнейма
     nicknameBox.setSize({300, 50});
-    nicknameBox.setPosition({100, 200});
+    nicknameBox.setPosition({435, 300});
     nicknameBox.setFillColor(Color::White);
     nicknameBox.setOutlineThickness(2);
     nicknameBox.setOutlineColor(Color::Black);
@@ -43,17 +54,17 @@ SettingsScene::SettingsScene() : savedNickname("Player"), currentNickname("Playe
     nicknameText.setFont(font);
     nicknameText.setCharacterSize(24);
     nicknameText.setFillColor(Color::Black);
-    nicknameText.setPosition({110, 210});
+    nicknameText.setPosition({435, 310});
     nicknameText.setString(currentNickname);
+
 
     // Настройка уведомления
     notificationText.setFont(font);
     notificationText.setCharacterSize(20);
     notificationText.setFillColor(Color::Green);
     notificationText.setString("Nickname saved!"); // По умолчанию
-    notificationText.setPosition(150, 270);
     notificationText.setStyle(Text::Bold);
-
+    notificationText.setString("Ratings cleared!"); // Будем переиспользовать тот же Text
 }
 
 void SettingsScene::resetNotification() {
@@ -102,6 +113,12 @@ void SettingsScene::update(float deltaTime) {
             resetNotification();
         }
     }
+    if (showClearNotification) {
+        clearNotificationTimer -= deltaTime;
+        if (clearNotificationTimer <= 0.f) {
+            showClearNotification = false;
+        }
+    }
 }
 
 void SettingsScene::render(RenderWindow &window) {
@@ -113,6 +130,11 @@ void SettingsScene::render(RenderWindow &window) {
     window.draw(nicknameText);
 
     if (showNotification) {
+        window.draw(notificationText);
+    }
+    if (showClearNotification) {
+        notificationText.setString("Ratings cleared!");
+        notificationText.setPosition(70, 660); // Подправим позицию
         window.draw(notificationText);
     }
 }

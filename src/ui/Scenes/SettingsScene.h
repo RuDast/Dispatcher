@@ -33,6 +33,8 @@ private:
     float notificationTimer = 0.f;
     bool showNotification = false;
 
+    bool showClearNotification = false;
+    float clearNotificationTimer = 0.f;
     void resetNotification();
 
 public:

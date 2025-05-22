@@ -21,7 +21,7 @@ private:
     std::vector<Button> btns_;
     sf::Text authNotificationText;
     bool showAuthNotification = false;
-    float authNotificationTimer = 0.f;
+
 };
 
 #endif //RATINGSCENE_H
