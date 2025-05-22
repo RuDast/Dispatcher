@@ -11,21 +11,21 @@ GameScene::GameScene(RenderWindow &window, const LevelConfig &config) : window_(
     font_.loadFromFile("../src/resources/font/main_font.ttf");
     level_ = make_unique<Level>(level_config_);
     btns_.push_back(Button({250, 120},
-                           {605, 282},
+                           {600, 550},
                            "Give",
                            font_,
                            [this]() { level_->handlePlayerChoice(true); }));
     btns_.push_back(Button({250, 120},
-                           {475, 412},
+                           {340, 550},
                            "Cancel",
                            font_,
                            [this]() { level_->handlePlayerChoice(false); }));
-    btns_.push_back(Button({250, 120}, {50, 50},"Back",font_,[this]() {if (back_btn_callback_) {back_btn_callback_(); timer = 0;}}));
+    btns_.push_back(Button({200, 100}, {25, 25},"Back",font_,[this]() {if (back_btn_callback_) {back_btn_callback_(); timer = 0;}}));
 
     timerText.setFont(font_);
     timerText.setCharacterSize(30);
     timerText.setFillColor(sf::Color::Black);
-    timerText.setPosition(100, 300);
+    timerText.setPosition(1020, 50);
 }
 
 void GameScene::setBackBtnCallback(const std::function<void()> &callback)
@@ -74,10 +74,9 @@ void GameScene::render(RenderWindow &window) {
                 " requests " + std::to_string(lastAmount) +
                 " unit(s) of Resource " + std::to_string(static_cast<int>(lastType) + 1);
 
-        // cout << req << endl;
         Text requestText(req, font_, 18);
         requestText.setFillColor(Color::Black);
-        requestText.setPosition(50.f, 50.f + (level_->getProcessCount() + 2) * 40.f);
+        requestText.setPosition(425.f, 500.f);
         window.draw(requestText);
     }
 
@@ -90,14 +89,14 @@ void GameScene::render(RenderWindow &window) {
 
 
     if (level_->isCompleted()) {
-        Text msg("Level completed!", font_, 24);
+        Text msg("Level completed!", font_, 40);
         msg.setFillColor(Color::Green);
-        msg.setPosition(400.f, 20.f);
+        msg.setPosition(420.f, 400.f);
         window.draw(msg);
     } else if (level_->isFailed()) {
-        Text msg("Level failed! Retry.", font_, 24);
+        Text msg("Level failed! Retry.", font_, 40);
         msg.setFillColor(Color::Red);
-        msg.setPosition(400.f, 20.f);
+        msg.setPosition(420.f, 400.f);
         window.draw(msg);
     }
 
@@ -105,6 +104,7 @@ void GameScene::render(RenderWindow &window) {
 
 bool GameScene::isComplete() const {
     return level_->isCompleted();
+
 }
 
 void GameScene::print() {

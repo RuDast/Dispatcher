@@ -30,24 +30,20 @@ void Level::generateRequest() {
         return;
     }
 
-    // 1) Составляем список индексов незавершённых процессов
     std::vector<int> procs;
     for (int i = 0; i < (int) processes_.size(); ++i) {
         if (!processes_[i].isFinished())
             procs.push_back(i);
     }
 
-    // Если процессов больше нет — отмечаем завершение уровня
     if (procs.empty()) {
         is_complete_ = true;
         return;
     }
 
-    // 2) Случайно выбираем процесс
     int pidx = procs[std::rand() % procs.size()];
     id_last_process_ = processes_[pidx].get_id();
 
-    // 3) Формируем список ресурсов, где need>0 и available>0
     const auto &need = processes_[pidx].get_res_ned_cnt();
     std::vector<int> ress;
     for (int j = 0; j < (int) need.size(); ++j) {
@@ -56,23 +52,17 @@ void Level::generateRequest() {
         }
     }
 
-    // Если нет ни одного ресурса для выдачи — считаем уровень завершённым
     if (ress.empty()) {
         is_complete_ = true;
         return;
     }
 
-    // 4) Случайно выбираем ресурс из подходящих
     int ridx = ress[std::rand() % ress.size()];
     last_res_type_ = static_cast<ResourceType>(ridx);
 
-    // 5) Генерируем k в диапазоне [1 .. min(need, available)]
     uint64_t available = resources_[ridx].get_current_count();
     uint64_t maxK = std::min<uint64_t>(need[ridx], available);
-    // maxK >= 1 гарантированно
     last_res_max_count_ = (std::rand() % maxK) + 1;
-
-    // 6) Флаг активного запроса
     activeRequest = true;
 
     std::cout << "[Level] [End] generateRequest(): is_complete_="
@@ -81,9 +71,11 @@ void Level::generateRequest() {
 }
 
 void Level::draw(RenderWindow &win, const Font &font) const {
-    constexpr float ORIGIN_X = 50.f;
-    constexpr float ORIGIN_Y = 50.f;
-    constexpr float CELL_WIDTH = 100.f;
+
+    float CELL_WIDTH = 150.f;
+    float ORIGIN_Y = 50.f;
+    resources_.size() == 5 ? CELL_WIDTH = 100.f: ORIGIN_Y = 150.f;
+    const float ORIGIN_X = (1200 - CELL_WIDTH*(resources_.size()+1))/2.0f;
     constexpr float CELL_HEIGHT = 40.f;
     const Color GRID_COLOR(200, 200, 200);
     const Color TEXT_COLOR(50, 50, 50);
