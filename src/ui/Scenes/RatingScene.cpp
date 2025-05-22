@@ -20,7 +20,7 @@ void RatingScene::setBackBtnCallback(const std::function<void()> &callback) {
     back_btn_callback_ = callback;
 }
 
-void RatingScene::handleInput(RenderWindow &window, const Event &event) {
+void RatingScene::handleInput(const Event &event) {
     for (auto &btn: btns_) {
         btn.handleEvent(event);
     }

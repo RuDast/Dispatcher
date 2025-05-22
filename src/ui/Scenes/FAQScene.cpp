@@ -22,7 +22,7 @@ void FAQScene::setBackBtnCallback(const std::function<void()> &callback)
 }
 
 
-void FAQScene::handleInput(RenderWindow &window, const Event &event) {
+void FAQScene::handleInput(const Event &event) {
     for (auto &btn: btns_) {
         btn.handleEvent(event);
     }

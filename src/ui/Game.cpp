@@ -1,6 +1,5 @@
 #include "Game.h"
 #include <iostream>
-
 #include "../core/structures.h"
 #include "../utils/Config.h"
 
@@ -11,20 +10,24 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
                        game::win_title),
                main_menu_scene_(),
                rating_scene_(),
-               settings_scene_(), faq_scene_() {
+               settings_scene_(),
+               faq_scene_(),
+               background({game::win_width, game::win_height}) {
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
     main_menu_scene_.setRatingBtnCallback([this]() {
         this->switchToRatingScene();
     });
     main_menu_scene_.setSettingsBtnCallback([this]() {
-    this->switchToSettingsScene();
+        this->switchToSettingsScene();
     });
     main_menu_scene_.setFAQBtnCallback([this]() {
-    this->switchToFAQScene();
+        this->switchToFAQScene();
     });
     main_menu_scene_.setLevSelCallback([this](const unsigned level) {
         this->startLevel(level);
     });
 
+    background.setFillColor(Color::White);
 
     rating_scene_.setBackBtnCallback([this]() {
         this->switchToMainScene();
@@ -33,7 +36,10 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
         this->switchToMainScene();
     });
     faq_scene_.setBackBtnCallback([this]() {
-    this->switchToMainScene();
+        this->switchToMainScene();
+    });
+    main_menu_scene_.setLevSelCallback([this](const unsigned level) {
+        this->startLevel(level);
     });
 
     current_scene_ = &main_menu_scene_;
@@ -52,26 +58,60 @@ void Game::run() {
 }
 
 void Game::processEvents() {
-    if (Event event; window_.pollEvent(event)) {
+    Event event{};
+    while (window_.pollEvent(event)) {
         if (event.type == Event::Closed) {
             window_.close();
             return;
         }
 
         if (current_scene_) {
-            current_scene_->handleInput(window_, event);
+            if (current_scene_ != &settings_scene_)
+            current_scene_->handleInput(event);
+            else
+                dynamic_cast<SettingsScene*>(current_scene_)->handleInput(window_, event);
         }
     }
 }
 
-void Game::update(const float dt) const {
+void Game::update(const float dt) {
+    if (pendingEnd_) {
+        endTimer_ -= dt;
+        if (endTimer_ <= 0.f) {
+            // После 2 секунд — закрываем уровень и сбрасываем флаг
+            endLevel();
+            pendingEnd_ = false;
+            game_status_ = GameStatus::None;
+        }
+        // во время ожидания не генерим новые запросы
+        return;
+    }
+
+
     if (current_scene_) {
         current_scene_->update(dt);
+    }
+
+    if (current_scene_ == game_scene_) {
+        if (current_scene_ == game_scene_) {
+            if (game_scene_->isFailed()) {
+                // провал — сразу планируем выход
+                pendingEnd_ = true;
+                endTimer_ = 2.0f;
+                game_status_ = GameStatus::Fail;
+            } else if (game_scene_->isComplete()) {
+                // успех — планируем выход
+                pendingEnd_ = true;
+                endTimer_ = 2.0f;
+                game_status_ = GameStatus::Success;
+            }
+        }
     }
 }
 
 void Game::render() {
     window_.clear();
+    window_.draw(background);
     if (current_scene_) {
         current_scene_->render(window_);
     }
@@ -82,13 +122,11 @@ void Game::switchToRatingScene() {
     current_scene_ = &rating_scene_;
 }
 
-void Game::switchToSettingsScene()
-{
+void Game::switchToSettingsScene() {
     current_scene_ = &settings_scene_;
 }
 
-void Game::switchToFAQScene()
-{
+void Game::switchToFAQScene() {
     current_scene_ = &faq_scene_;
 }
 
@@ -101,15 +139,15 @@ void Game::startLevel(unsigned level) {
     LevelConfig cfg;
 
     cfg.resources_ = {
-        { ResourceType::Type1, 6 },
-        { ResourceType::Type2, 3 }
+        {ResourceType::Type1, 6},
+        {ResourceType::Type2, 3}
     };
 
     cfg.processes_ = {
-        { 1, { 5, 2 } },
-        { 2, { 2, 3 } },
-        { 3, { 6, 3 } },
-        { 4, { 1, 1 } }
+        {1, {5, 2}},
+        {2, {2, 3}},
+        {3, {6, 3}},
+        {4, {1, 1}}
     };
 
     game_scene_ = new GameScene(window_, cfg);
@@ -117,4 +155,11 @@ void Game::startLevel(unsigned level) {
     game_scene_->setBackBtnCallback([this]() {
     this->switchToMainScene();
     });
+}
+
+void Game::endLevel() {
+    delete game_scene_;
+    game_scene_ = nullptr;
+    main_menu_scene_.reset();
+    current_scene_ = &main_menu_scene_;
 }

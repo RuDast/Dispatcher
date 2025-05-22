@@ -9,7 +9,7 @@ class SettingsScene : public Scene {
 public:
     SettingsScene();
     void setBackBtnCallback(const std::function<void()>& callback);
-    void handleInput(sf::RenderWindow &window, const sf::Event &event) override;
+    void handleInput(sf::RenderWindow &window, const sf::Event &event);
     void update(float deltaTime) override;
     void render(sf::RenderWindow &window) override;
     std::string getNickname() const; // Новый метод вместо createNickname
@@ -34,6 +34,9 @@ private:
     bool showNotification = false;
 
     void resetNotification();
+
+public:
+    void handleInput(const sf::Event &event) override;
 };
 
 #endif //SETTINGSSCENE_H

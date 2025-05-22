@@ -61,6 +61,10 @@ void SettingsScene::resetNotification() {
     notificationTimer = 0.f;
 }
 
+void SettingsScene::handleInput(const sf::Event &event) {
+    cout << "Test" << endl;
+}
+
 void SettingsScene::handleInput(RenderWindow &window, const Event &event) {
     // Обработка кнопок
     for (auto &btn : btns_) {
