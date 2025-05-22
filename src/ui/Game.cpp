@@ -82,12 +82,10 @@ void Game::update(const float dt) {
     if (pendingEnd_) {
         endTimer_ -= dt;
         if (endTimer_ <= 0.f) {
-            // После 2 секунд — закрываем уровень и сбрасываем флаг
             endLevel();
             pendingEnd_ = false;
             game_status_ = GameStatus::None;
         }
-        // во время ожидания не генерим новые запросы
         return;
     }
 
@@ -99,7 +97,6 @@ void Game::update(const float dt) {
     if (current_scene_ == game_scene_) {
         if (current_scene_ == game_scene_) {
             if (game_scene_->isFailed()) {
-                // провал — сразу планируем выход
                 pendingEnd_ = true;
                 endTimer_ = 2.0f;
                 game_status_ = GameStatus::Fail;
