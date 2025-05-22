@@ -1,11 +1,11 @@
-#ifndef SETTINGSSCENE_H
-#define SETTINGSSCENE_H
+#ifndef FAQSCENE_H
+#define FAQSCENE_H
 #include "../Scene.h"
 #include "../../utils/Button.h"
 
-class SettingsScene : public Scene {
+class FAQScene : public Scene{
 public:
-    SettingsScene();
+    FAQScene();
 
     void setBackBtnCallback(const std::function<void()>& callback);
 
@@ -14,11 +14,14 @@ public:
     void update(float deltaTime) override;
 
     void render(sf::RenderWindow &window) override;
+
 private:
-    std::function<void()> back_btn_callback_;
     sf::Font font;
+    std::function<void()> back_btn_callback_;
     std::vector<Button> btns_;
+
 };
 
 
-#endif //SETTINGSSCENE_H
+
+#endif //FAQSCENE_H

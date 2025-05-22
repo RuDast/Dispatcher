@@ -15,17 +15,38 @@ MainMenuScene::MainMenuScene() {
                            "LEVEL 1",
                            font,
                            [this]() {
-                               if (rating_button_callback_) rating_button_callback_();
+                               if (levelSelectCallback_) levelSelectCallback_(1);
                            }));
     btns_.push_back(Button({250, 120}, {605, 282}, "LEVEL 2", font, [this]() { this->print(); }));
     btns_.push_back(Button({250, 120}, {475, 412}, "LEVEL 3", font, [this]() { this->print(); }));
-    btns_.push_back(Button({200, 100}, {990, 580}, "UNDEF", font, [this]() { this->print(); }));
-    btns_.push_back(Button({200, 100}, {990, 470}, "UNDEF", font, [this]() { this->print(); }));
-    btns_.push_back(Button({200, 100}, {990, 20}, "UNDEF", font, [this]() { this->print(); }));
+    btns_.push_back(Button({200, 100}, {990, 580}, "rating", font, [this]() { if (rating_button_callback_) rating_button_callback_(); }));
+    btns_.push_back(Button({200, 100}, {990, 470}, "FAQ", font, [this]() { if (faq_button_callback_) faq_button_callback_(); }));
+    btns_.push_back(Button({200, 100}, {990, 20}, "settings", font, [this]() { if (settings_button_callback_) settings_button_callback_(); }));
 }
 
-void MainMenuScene::setRatBtnCallback(const std::function<void()> &callback) {
+
+void MainMenuScene::setRatingBtnCallback(const std::function<void()> &callback)
+{
     rating_button_callback_ = callback;
+}
+
+void MainMenuScene::setLevSelCallback(const std::function<void(int)> &callback) {
+    levelSelectCallback_ = callback;
+}
+
+void MainMenuScene::setLvl1BtnCallback(const std::function<void()> &callback)
+{
+    lvl1_button_callback_ = callback;
+}
+
+void MainMenuScene::setSettingsBtnCallback(const std::function<void()> &callback)
+{
+    settings_button_callback_ = callback;
+}
+
+void MainMenuScene::setFAQBtnCallback(const std::function<void()> &callback)
+{
+    faq_button_callback_ = callback;
 }
 
 void MainMenuScene::render(RenderWindow &window) {

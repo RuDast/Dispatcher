@@ -1,7 +1,7 @@
 #include "Game.h"
-
 #include <iostream>
 
+#include "../core/structures.h"
 #include "../utils/Config.h"
 
 using namespace sf;
@@ -11,14 +11,33 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
                        game::win_title),
                main_menu_scene_(),
                rating_scene_(),
-               settings_scene_() {
-    main_menu_scene_.setRatBtnCallback([this]() {
+               settings_scene_(), faq_scene_() {
+    main_menu_scene_.setRatingBtnCallback([this]() {
         this->switchToRatingScene();
     });
+    main_menu_scene_.setSettingsBtnCallback([this]() {
+    this->switchToSettingsScene();
+    });
+    main_menu_scene_.setFAQBtnCallback([this]() {
+    this->switchToFAQScene();
+    });
+    main_menu_scene_.setLevSelCallback([this](const unsigned level) {
+        this->startLevel(level);
+    });
+
+
     rating_scene_.setBackBtnCallback([this]() {
         this->switchToMainScene();
     });
+    settings_scene_.setBackBtnCallback([this]() {
+        this->switchToMainScene();
+    });
+    faq_scene_.setBackBtnCallback([this]() {
+    this->switchToMainScene();
+    });
+
     current_scene_ = &main_menu_scene_;
+
     run();
 }
 
@@ -63,6 +82,39 @@ void Game::switchToRatingScene() {
     current_scene_ = &rating_scene_;
 }
 
+void Game::switchToSettingsScene()
+{
+    current_scene_ = &settings_scene_;
+}
+
+void Game::switchToFAQScene()
+{
+    current_scene_ = &faq_scene_;
+}
+
 void Game::switchToMainScene() {
     current_scene_ = &main_menu_scene_;
+}
+
+void Game::startLevel(unsigned level) {
+    delete game_scene_;
+    LevelConfig cfg;
+
+    cfg.resources_ = {
+        { ResourceType::Type1, 6 },
+        { ResourceType::Type2, 3 }
+    };
+
+    cfg.processes_ = {
+        { 1, { 5, 2 } },
+        { 2, { 2, 3 } },
+        { 3, { 6, 3 } },
+        { 4, { 1, 1 } }
+    };
+
+    game_scene_ = new GameScene(window_, cfg);
+    current_scene_ = game_scene_;
+    game_scene_->setBackBtnCallback([this]() {
+    this->switchToMainScene();
+    });
 }
