@@ -6,7 +6,8 @@ using namespace sf;
 using namespace std;
 
 GameScene::GameScene(RenderWindow &window, const LevelConfig &config) : window_(window),
-                                                                        level_config_(config) {
+                                                                        level_config_(config)
+{
     font_.loadFromFile("../src/resources/font/main_font.ttf");
     level_ = make_unique<Level>(level_config_);
     btns_.push_back(Button({250, 120},
@@ -19,6 +20,12 @@ GameScene::GameScene(RenderWindow &window, const LevelConfig &config) : window_(
                            "Cancel",
                            font_,
                            [this]() { level_->handlePlayerChoice(false); }));
+    btns_.push_back(Button({250, 120}, {50, 50},"Back",font_,[this]() {if (back_btn_callback_) {back_btn_callback_(); timer = 0;}}));
+
+    timerText.setFont(font_);
+    timerText.setCharacterSize(30);
+    timerText.setFillColor(sf::Color::Black);
+    timerText.setPosition(100, 300);
 }
 
 void GameScene::setBackBtnCallback(const std::function<void()> &callback)
@@ -57,6 +64,8 @@ void GameScene::update(float deltaTime) {
 }
 
 void GameScene::render(RenderWindow &window) {
+
+
     level_->draw(window, font_);
 
     if (level_->hasActiveRequest() && !level_->isFailed() && !level_->isCompleted()) {
@@ -72,9 +81,13 @@ void GameScene::render(RenderWindow &window) {
         window.draw(requestText);
     }
 
+
+    window.draw(timerText);
     for (auto &btn: btns_) {
         window.draw(btn);
     }
+
+
 
     if (level_->isCompleted()) {
         Text msg("Level completed!", font_, 24);
@@ -87,6 +100,7 @@ void GameScene::render(RenderWindow &window) {
         msg.setPosition(400.f, 20.f);
         window.draw(msg);
     }
+
 }
 
 bool GameScene::isComplete() const {
