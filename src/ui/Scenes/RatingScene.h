@@ -19,7 +19,9 @@ private:
     sf::Font font;
     std::function<void()> back_btn_callback_;
     std::vector<Button> btns_;
-
+    sf::Text authNotificationText;
+    bool showAuthNotification = false;
+    float authNotificationTimer = 0.f;
 };
 
 #endif //RATINGSCENE_H
