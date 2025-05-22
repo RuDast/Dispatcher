@@ -42,6 +42,9 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
         this->startLevel(level);
     });
 
+    buffer.loadFromFile("../src/resources/sounds/wasted.wav");
+    sound_wasted.setBuffer(buffer);
+
     current_scene_ = &main_menu_scene_;
 
     run();
@@ -99,6 +102,7 @@ void Game::update(const float dt) {
                 pendingEnd_ = true;
                 endTimer_ = 2.0f;
                 game_status_ = GameStatus::Fail;
+                sound_wasted.play();
             } else if (game_scene_->isComplete()) {
                 // успех — планируем выход
                 pendingEnd_ = true;
@@ -136,21 +140,62 @@ void Game::switchToMainScene() {
 
 void Game::startLevel(unsigned level) {
     delete game_scene_;
-    LevelConfig cfg;
+    LevelConfig cfg1;
 
-    cfg.resources_ = {
+    cfg1.resources_ = {
         {ResourceType::Type1, 6},
         {ResourceType::Type2, 3}
     };
 
-    cfg.processes_ = {
+    cfg1.processes_ = {
         {1, {5, 2}},
         {2, {2, 3}},
         {3, {6, 3}},
         {4, {1, 1}}
     };
 
-    game_scene_ = new GameScene(window_, cfg);
+    LevelConfig cfg2;
+    cfg2.resources_ = {
+        { ResourceType::Type1, 5 },
+        { ResourceType::Type2, 7 },
+        { ResourceType::Type3, 4 }
+    };
+    cfg2.processes_ = {
+        { 1, { 1, 2, 1 } },  // процесс 1: нужно 1×R1, 2×R2, 1×R3
+        { 2, { 2, 1, 1 } },  // процесс 2
+        { 3, { 3, 2, 2 } },  // процесс 3
+        { 4, { 4, 1, 3 } },  // процесс 4
+        { 5, { 2, 3, 1 } },  // процесс 5
+        { 6, { 1, 1, 2 } }   // процесс 6
+    };
+
+    // --- Конфиг третьего уровня: 5 типов ресурсов, 9 процессов ---
+    LevelConfig cfg3;
+    cfg3.resources_ = {
+        { ResourceType::Type1, 10 },
+        { ResourceType::Type2, 8  },
+        { ResourceType::Type3, 6  },
+        { ResourceType::Type4, 7  },
+        { ResourceType::Type5, 5  }
+    };
+    cfg3.processes_ = {
+        { 1, { 2, 1, 1, 0, 2 } },
+        { 2, { 1, 2, 0, 1, 1 } },
+        { 3, { 3, 1, 2, 1, 0 } },
+        { 4, { 0, 1, 1, 2, 2 } },
+        { 5, { 1, 0, 2, 1, 1 } },
+        { 6, { 2, 2, 1, 0, 1 } },
+        { 7, { 1, 1, 1, 1, 1 } },
+        { 8, { 0, 2, 2, 1, 0 } },
+        { 9, { 1, 0, 1, 2, 2 } }
+    };
+
+    if (level == 1)
+        game_scene_ = new GameScene(window_, cfg1);
+    else if (level == 2)
+        game_scene_ = new GameScene(window_, cfg2);
+    else if (level == 3)
+        game_scene_ = new GameScene(window_, cfg3);
     current_scene_ = game_scene_;
     game_scene_->setBackBtnCallback([this]() {
     this->switchToMainScene();
