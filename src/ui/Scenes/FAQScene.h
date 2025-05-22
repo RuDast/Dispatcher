@@ -16,29 +16,17 @@ public:
 
 private:
     void initCrawlText();
+    bool loadTextFromFile(const std::string& path); // Новая функция загрузки
 
     sf::Font font;
     std::function<void()> back_btn_callback_;
     std::vector<Button> btns_;
 
-    // Для эффекта "звёздных войн"
+    // Для эффекта прокрутки
     sf::Text crawlText;
     float textPositionY;
-    float crawlSpeed = 50.f; // Пикселей в секунду
-    std::vector<std::string> crawlLines = {
-        "Frequently Asked Questions",
-        "",
-        "Q: How to play this game?",
-        "A: Use arrow keys to move and space to interact.",
-        "",
-        "Q: How to save progress?",
-        "A: Progress saves automatically between levels.",
-        "",
-        "Q: How to change controls?",
-        "A: Go to Settings from the main menu.",
-        "",
-        "May the Force be with you!"
-    };
+    float crawlSpeed = 50.f;
+    std::vector<std::string> crawlLines; // Теперь загружается из файла
 };
 
 #endif // FAQSCENE_H
