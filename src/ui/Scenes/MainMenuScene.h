@@ -16,6 +16,7 @@ private:
     std::function<void(int)> levelSelectCallback_;
     std::function<void()> settings_button_callback_;
     std::function<void()> faq_button_callback_;
+    sf::RectangleShape background_;
 public:
     void setRatingBtnCallback(const std::function<void()>& callback);
 
