@@ -1,6 +1,5 @@
 #include "Game.h"
 #include <iostream>
-
 #include "../core/structures.h"
 #include "../utils/Config.h"
 

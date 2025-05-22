@@ -4,14 +4,18 @@
 #include "../../core/Level.h"
 #include "../../core/structures.h"
 #include "../../utils/Button.h"
+#include <string>
 
 
 class GameScene : public Scene {
+    unsigned timer = 0;
+    float accumulatedTime = 0.0f;
     sf::RenderWindow& window_;
     LevelConfig level_config_;
     Level level_;
     std::vector<Button> btns_;
     sf::Font font;
+    sf::Text timerText;
     std::function<void()> back_btn_callback_;
 public:
     GameScene(sf::RenderWindow &window, const LevelConfig& config);

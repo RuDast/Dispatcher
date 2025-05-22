@@ -1,7 +1,6 @@
 #ifndef GAME_H
 #define GAME_H
 #include <SFML/Graphics.hpp>
-
 #include "Scene.h"
 #include "Scenes/GameScene.h"
 #include "Scenes/FAQScene.h"
