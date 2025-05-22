@@ -23,51 +23,110 @@ Level::Level(const LevelConfig &level_config) : config_(level_config),
 }
 
 void Level::generateRequest() {
-    std::cout << "[Level] [Begin] generateRequest(): is_complete_="
-            << is_complete_ << ", is_failed=" << is_failed
-            << ", activeRequest=" << activeRequest << std::endl;
+    // 0) Если уже есть активный запрос или уровень уже завершён/провален — выходим
     if (activeRequest || is_complete_ || is_failed) {
         return;
     }
 
+<<<<<<< HEAD
+=======
+    // 1) Собираем список незавершённых процессов
+>>>>>>> origin/main
     std::vector<int> procs;
-    for (int i = 0; i < (int) processes_.size(); ++i) {
+    for (int i = 0; i < (int)processes_.size(); ++i) {
         if (!processes_[i].isFinished())
             procs.push_back(i);
     }
+<<<<<<< HEAD
 
+=======
+    // Если процессов больше нет — победа
+>>>>>>> origin/main
     if (procs.empty()) {
         is_complete_ = true;
         return;
     }
 
+<<<<<<< HEAD
     int pidx = procs[std::rand() % procs.size()];
     id_last_process_ = processes_[pidx].get_id();
 
+=======
+    // 2) Проверяем тупик: есть ли хотя бы один процесс, чей need <= available?
+    {
+        // Собираем вектор available
+        std::vector<uint64_t> available(resources_.size());
+        for (int j = 0; j < (int)resources_.size(); ++j)
+            available[j] = resources_[j].get_current_count();
+
+        bool canProceed = false;
+        for (int pi : procs) {
+            const auto &need = processes_[pi].get_res_ned_cnt();
+            bool fits = true;
+            for (int j = 0; j < (int)need.size(); ++j) {
+                if (need[j] > available[j]) {
+                    fits = false;
+                    break;
+                }
+            }
+            if (fits) {
+                canProceed = true;
+                break;
+            }
+        }
+
+        if (!canProceed) {
+            std::cout << "[Level] Deadlock detected: no process can proceed → FAIL\n";
+            is_failed = true;
+            return;
+        }
+    }
+
+    // 3) Случайно выбираем один из незавершённых процессов
+    int pidx = procs[std::rand() % procs.size()];
+    id_last_process_ = processes_[pidx].get_id();
+
+    // 4) Формируем список ресурсов, где need>0 и available>0
+>>>>>>> origin/main
     const auto &need = processes_[pidx].get_res_ned_cnt();
     std::vector<int> ress;
-    for (int j = 0; j < (int) need.size(); ++j) {
+    for (int j = 0; j < (int)need.size(); ++j) {
         if (need[j] > 0 && resources_[j].get_current_count() > 0) {
             ress.push_back(j);
         }
     }
+<<<<<<< HEAD
 
+=======
+    // (на всякий случай) если вдруг списка нет — тупик
+>>>>>>> origin/main
     if (ress.empty()) {
-        is_complete_ = true;
+        std::cout << "[Level] No positive-need & available resource → FAIL\n";
+        is_failed = true;
         return;
     }
 
+<<<<<<< HEAD
     int ridx = ress[std::rand() % ress.size()];
     last_res_type_ = static_cast<ResourceType>(ridx);
 
     uint64_t available = resources_[ridx].get_current_count();
     uint64_t maxK = std::min<uint64_t>(need[ridx], available);
     last_res_max_count_ = (std::rand() % maxK) + 1;
-    activeRequest = true;
+=======
+    // 5) Выбираем тип ресурса и количество k ∈ [1..min(need,available)]
+    int ridx = ress[std::rand() % ress.size()];
+    last_res_type_ = static_cast<ResourceType>(ridx);
+    uint64_t avail = resources_[ridx].get_current_count();
+    uint64_t maxK  = std::min<uint64_t>(need[ridx], avail);
+    last_res_max_count_ = (std::rand() % maxK) + 1;
 
-    std::cout << "[Level] [End] generateRequest(): is_complete_="
-            << is_complete_ << ", is_failed=" << is_failed
-            << ", activeRequest=" << activeRequest << std::endl;
+    // 6) Отмечаем, что запрос активен
+>>>>>>> origin/main
+    activeRequest = true;
+    std::cout << "[Level] Generated request: P=" << id_last_process_
+              << " wants " << last_res_max_count_
+              << " of R" << (int)last_res_type_+1 << "\n";
 }
 
 void Level::draw(RenderWindow &win, const Font &font) const {
@@ -235,6 +294,11 @@ int Level::findProcessIndexByPid(const uint64_t id) const {
 void Level::handlePlayerChoice(const bool grant) {
     if (!activeRequest || is_complete_ || is_failed) return;
 
+    if (!checkSafety()) {
+        std::cout << "[Level] Deadlock detected in current state → FAIL\n";
+        is_failed = true;
+        return;
+    }
     int pi = findProcessIndexByPid(id_last_process_);
     int r = static_cast<int>(last_res_type_);
     int k = last_res_max_count_;
