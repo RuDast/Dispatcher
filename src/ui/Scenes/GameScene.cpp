@@ -1,5 +1,5 @@
 #include "GameScene.h"
-
+#include <sstream>
 #include <iostream>
 
 using namespace sf;
@@ -21,6 +21,11 @@ GameScene::GameScene(RenderWindow &window, const LevelConfig &config) : window_(
                            [this]() { level_->handlePlayerChoice(false); }));
 }
 
+void GameScene::setBackBtnCallback(const std::function<void()> &callback)
+{
+    back_btn_callback_ = callback;
+}
+
 void GameScene::handleInput(const Event &event) {
     for (auto &btn: btns_) {
         btn.handleEvent(event);
@@ -37,6 +42,18 @@ void GameScene::update(float deltaTime) {
         lastType = level_->getLastType();
         lastAmount = level_->getLastAmount();
     }
+
+    accumulatedTime+= deltaTime;
+    if(accumulatedTime >= 1.0f)
+    {
+        timer++;
+        accumulatedTime = 0.0f;
+        std::stringstream ss;
+        ss << "Time: " << timer << "s";
+        timerText.setString(ss.str());
+    }
+
+
 }
 
 void GameScene::render(RenderWindow &window) {
