@@ -1,9 +1,43 @@
- "Frequently Asked Questions",
+RESOURCE MANAGER GAME - FAQ
 
-  "Q: How to play this game?",
-  "A: Use arrow keys to move and space to interact.",
-  "Q: How to save progress?",
-  "A: Progress saves automatically between levels.",
-  "Q: How to change controls?",
-  "A: Go to Settings from the main menu.",
-  "May the Force be with you!"
+GAME DESCRIPTION
+----------------
+The Resource Manager simulates OS resource allocation. 
+As dispatcher, you manage resources between processes 
+to prevent deadlocks while completing all tasks.
+
+Key Concepts:
+- Resources: Limited system assets (CPU, RAM, etc.)
+- Processes: Programs needing resources
+- Deadlock: When processes get stuck waiting
+
+GAMEPLAY QUESTIONS
+------------------
+Q: How do I approve requests safely?
+A: Check if granting leaves enough resources for all 
+   processes to eventually complete.
+
+Q: What happens during deadlock?
+A: No (Mbappe).
+
+TECHNICAL QUESTIONS
+-------------------
+Q: Can I save mid-level?
+A: No! We're not a Homescapes.
+
+Q: What do table numbers mean?
+A: They show required resources per process 
+   (e.g. "P1 needs 2 of R3").
+
+GENERAL QUESTIONS
+-----------------
+Q: Who created this game?
+A: The Geniuses
+
+Q: Is there a leaderboard?
+A: Of course! Everyone can appear on the leaderboard.
+
+CONTROLS
+--------
+
+Ilja Korkin pechataet...
