@@ -1,6 +1,6 @@
 #include "SettingsScene.h"
 #include <iostream>
-
+#include "Rating.h"
 using namespace sf;
 using namespace std;
 
@@ -18,12 +18,20 @@ SettingsScene::SettingsScene() : savedNickname("Player"), currentNickname("Playe
 
     // Кнопка сохранения
     btns_.push_back(Button({200, 50}, {150, 300}, "Save", font, [this]() {
-        if (!currentNickname.empty()) {
-            savedNickname = currentNickname; // Сохраняем только здесь!
-            showNotification = true;
-            notificationTimer = 2.0f;
+    if (!currentNickname.empty()) {
+        savedNickname = currentNickname;
+        if (Rating::isNicknameExists(savedNickname)) {
+            notificationText.setString("Successful authorization!");
+            notificationText.setPosition(120, 270); // Подправляем позицию для нового текста
+        } else {
+            Rating::saveNickname(savedNickname);
+            notificationText.setString("Nickname saved!");
+            notificationText.setPosition(150, 270);
         }
-    }));
+        showNotification = true;
+        notificationTimer = 2.0f;
+    }
+}));
 
     // Поле ввода никнейма
     nicknameBox.setSize({300, 50});
@@ -42,9 +50,10 @@ SettingsScene::SettingsScene() : savedNickname("Player"), currentNickname("Playe
     notificationText.setFont(font);
     notificationText.setCharacterSize(20);
     notificationText.setFillColor(Color::Green);
-    notificationText.setString("Nickname saved!");
+    notificationText.setString("Nickname saved!"); // По умолчанию
     notificationText.setPosition(150, 270);
     notificationText.setStyle(Text::Bold);
+
 }
 
 void SettingsScene::resetNotification() {
