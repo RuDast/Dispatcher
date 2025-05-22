@@ -1,13 +1,11 @@
 #include "Level.h"
-
 #include <iostream>
 #include <random>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
-
-
 using namespace sf;
 using namespace std;
+
 
 Level::Level(const LevelConfig &level_config) : config_(level_config),
                                                 last_res_type_(ResourceType::Type1),
@@ -23,38 +21,27 @@ Level::Level(const LevelConfig &level_config) : config_(level_config),
 }
 
 void Level::generateRequest() {
-    // 0) Если уже есть активный запрос или уровень уже завершён/провален — выходим
     if (activeRequest || is_complete_ || is_failed) {
         return;
     }
 
-<<<<<<< HEAD
-=======
-    // 1) Собираем список незавершённых процессов
->>>>>>> origin/main
+
     std::vector<int> procs;
     for (int i = 0; i < (int)processes_.size(); ++i) {
         if (!processes_[i].isFinished())
             procs.push_back(i);
     }
-<<<<<<< HEAD
 
-=======
-    // Если процессов больше нет — победа
->>>>>>> origin/main
     if (procs.empty()) {
         is_complete_ = true;
         return;
     }
 
-<<<<<<< HEAD
     int pidx = procs[std::rand() % procs.size()];
     id_last_process_ = processes_[pidx].get_id();
 
-=======
-    // 2) Проверяем тупик: есть ли хотя бы один процесс, чей need <= available?
     {
-        // Собираем вектор available
+
         std::vector<uint64_t> available(resources_.size());
         for (int j = 0; j < (int)resources_.size(); ++j)
             available[j] = resources_[j].get_current_count();
@@ -82,12 +69,7 @@ void Level::generateRequest() {
         }
     }
 
-    // 3) Случайно выбираем один из незавершённых процессов
-    int pidx = procs[std::rand() % procs.size()];
-    id_last_process_ = processes_[pidx].get_id();
 
-    // 4) Формируем список ресурсов, где need>0 и available>0
->>>>>>> origin/main
     const auto &need = processes_[pidx].get_res_ned_cnt();
     std::vector<int> ress;
     for (int j = 0; j < (int)need.size(); ++j) {
@@ -95,34 +77,20 @@ void Level::generateRequest() {
             ress.push_back(j);
         }
     }
-<<<<<<< HEAD
 
-=======
-    // (на всякий случай) если вдруг списка нет — тупик
->>>>>>> origin/main
     if (ress.empty()) {
         std::cout << "[Level] No positive-need & available resource → FAIL\n";
         is_failed = true;
         return;
     }
 
-<<<<<<< HEAD
     int ridx = ress[std::rand() % ress.size()];
     last_res_type_ = static_cast<ResourceType>(ridx);
 
     uint64_t available = resources_[ridx].get_current_count();
     uint64_t maxK = std::min<uint64_t>(need[ridx], available);
     last_res_max_count_ = (std::rand() % maxK) + 1;
-=======
-    // 5) Выбираем тип ресурса и количество k ∈ [1..min(need,available)]
-    int ridx = ress[std::rand() % ress.size()];
-    last_res_type_ = static_cast<ResourceType>(ridx);
-    uint64_t avail = resources_[ridx].get_current_count();
-    uint64_t maxK  = std::min<uint64_t>(need[ridx], avail);
-    last_res_max_count_ = (std::rand() % maxK) + 1;
 
-    // 6) Отмечаем, что запрос активен
->>>>>>> origin/main
     activeRequest = true;
     std::cout << "[Level] Generated request: P=" << id_last_process_
               << " wants " << last_res_max_count_
