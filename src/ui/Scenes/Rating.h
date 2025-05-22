@@ -4,14 +4,19 @@
 
 #include <string>
 #include <vector>
+#include <utility> // для std::pair
 
 class Rating {
 public:
-    static void saveNickname(const std::string& nickname);
-    static bool isNicknameExists(const std::string& nickname);
-    static void clearRatings(); // Новый метод для очистки
+    static void savePlayer(const std::string& nickname, int score = 0);
+    static std::vector<std::pair<std::string, int>> getAllPlayers();
+    static void updatePlayerScore(const std::string& nickname, int newScore);
+    static void clearRatings();
+
 private:
-    static std::vector<std::string> readAllNicknames();
+    static const std::string RATING_FILE_PATH;
+    static std::vector<std::pair<std::string, int>> readAllPlayers();
+    static void writeAllPlayers(const std::vector<std::pair<std::string, int>>& players);
 };
 
 #endif // RATING_H

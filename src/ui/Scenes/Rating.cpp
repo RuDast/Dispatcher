@@ -2,48 +2,72 @@
 #include "Rating.h"
 #include <fstream>
 #include <algorithm>
-#include <iostream>
+#include <sstream>
 
-std::vector<std::string> Rating::readAllNicknames() {
-    std::vector<std::string> nicknames;
-    std::ifstream file("../src/resources/raiting.txt");
+const std::string Rating::RATING_FILE_PATH = "../src/resources/rating.txt";
+
+void Rating::savePlayer(const std::string& nickname, int score) {
+    auto players = readAllPlayers();
+
+    // Проверяем, существует ли уже игрок
+    auto it = std::find_if(players.begin(), players.end(),
+        [&nickname](const auto& p) { return p.first == nickname; });
+
+    if (it == players.end()) {
+        players.emplace_back(nickname, score);
+        writeAllPlayers(players);
+    }
+}
+
+std::vector<std::pair<std::string, int>> Rating::getAllPlayers() {
+    auto players = readAllPlayers();
+    // Сортируем по убыванию очков
+    std::sort(players.begin(), players.end(),
+        [](const auto& a, const auto& b) { return a.second > b.second; });
+    return players;
+}
+
+void Rating::updatePlayerScore(const std::string& nickname, int newScore) {
+    auto players = readAllPlayers();
+    for (auto& player : players) {
+        if (player.first == nickname) {
+            player.second = newScore;
+            break;
+        }
+    }
+    writeAllPlayers(players);
+}
+
+std::vector<std::pair<std::string, int>> Rating::readAllPlayers() {
+    std::vector<std::pair<std::string, int>> players;
+    std::ifstream file(RATING_FILE_PATH);
 
     if (file.is_open()) {
         std::string line;
         while (std::getline(file, line)) {
-            if (!line.empty()) {
-                nicknames.push_back(line);
+            std::istringstream iss(line);
+            std::string nickname;
+            int score;
+            if (iss >> nickname >> score) {
+                players.emplace_back(nickname, score);
             }
         }
         file.close();
     }
-    return nicknames;
+    return players;
 }
 
-bool Rating::isNicknameExists(const std::string& nickname) {
-    auto nicknames = readAllNicknames();
-    return std::find(nicknames.begin(), nicknames.end(), nickname) != nicknames.end();
+void Rating::writeAllPlayers(const std::vector<std::pair<std::string, int>>& players) {
+    std::ofstream file(RATING_FILE_PATH);
+    if (file.is_open()) {
+        for (const auto& player : players) {
+            file << player.first << " " << player.second << "\n";
+        }
+        file.close();
+    }
 }
+
 void Rating::clearRatings() {
-    std::ofstream file("../src/resources/raiting.txt", std::ios::trunc); // Открываем с trunc для очистки
-    if (file.is_open()) {
-        file.close();
-        std::cout << "Ratings file cleared successfully" << std::endl;
-    } else {
-        std::cerr << "Failed to clear ratings file" << std::endl;
-    }
-}
-
-void Rating::saveNickname(const std::string& nickname) {
-    if (nickname.empty() || isNicknameExists(nickname)) {
-        return; // Не сохраняем пустые никнеймы или уже существующие
-    }
-
-    std::ofstream file("../src/resources/raiting.txt", std::ios::app);
-    if (file.is_open()) {
-        file << nickname << std::endl;
-        file.close();
-    } else {
-        std::cerr << "Unable to open raiting.txt file" << std::endl;
-    }
+    std::ofstream file(RATING_FILE_PATH, std::ios::trunc);
+    file.close();
 }
