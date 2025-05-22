@@ -1,4 +1,5 @@
 #include "FAQScene.h"
+#include <fstream>
 #include <iostream>
 
 using namespace sf;
@@ -11,11 +12,50 @@ FAQScene::FAQScene() {
 
     // Кнопка назад (правый верхний угол с отступом 20px)
     btns_.push_back(Button({250, 50}, {1200 - 250 - 20, 20}, "Back", font, [this]() {
-        if (back_btn_callback_) back_btn_callback_();
+        if (back_btn_callback_) {
+            back_btn_callback_();
+            faq_sound.stop();
+        }
     }));
 
-    // Инициализация текста
+    // Загружаем текст из файла
+    if (!loadTextFromFile("../src/resources/FAQ.txt")) {
+        // Если файл не загружен, используем текст по умолчанию
+        crawlLines = {
+            "Frequently Asked Questions",
+            "",
+            "Error: Could not load FAQ.txt",
+            "Please make sure the file exists",
+            "",
+            "Default questions will be shown",
+            "",
+            "Q: How to play?",
+            "A: Use keyboard controls",
+            "",
+            "Q: How to save?",
+            "A: Progress saves automatically"
+        };
+    }
+    buffer_faq.loadFromFile("../src/resources/sounds/snd.mp3");
+    faq_sound.setBuffer(buffer_faq);
+
     initCrawlText();
+
+}
+bool FAQScene::loadTextFromFile(const std::string& path) {
+    ifstream file(path);
+    if (!file.is_open()) {
+        cerr << "Failed to open FAQ file: " << path << endl;
+        return false;
+    }
+
+    crawlLines.clear();
+    string line;
+    while (getline(file, line)) {
+        crawlLines.push_back(line);
+    }
+    file.close();
+    return true;
 }
 
 void FAQScene::initCrawlText() {
@@ -56,32 +96,29 @@ void FAQScene::handleInput(const Event& event) {
             crawlSpeed = max(10.f, crawlSpeed - 20.f);
         }
     }
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::M) { // M - mute/unmute
+            if (musicPlaying) {
+                faq_sound.pause();
+                musicPlaying = false;
+            } else {
+                faq_sound.play();
+                musicPlaying = true;
+            }
+        }
+    }
 }
 
 void FAQScene::update(float deltaTime) {
     // Двигаем текст вверх
     textPositionY -= crawlSpeed * deltaTime;
-    crawlText.setPosition(1200/2, textPositionY);  // Всегда по центру X
+    crawlText.setPosition(600, textPositionY);
 
     // Если текст полностью ушел вверх, начинаем заново
     if (textPositionY < -crawlText.getLocalBounds().height) {
         textPositionY = 705;
     }
 
-    // Перспективный эффект (масштабирование)
-    float scale = 1.0f + (705 - textPositionY) / 1400.f;  // Плавное увеличение
-    crawlText.setScale(scale, scale);
-
-    // Плавное появление/исчезновение у границ
-    sf::Color color = crawlText.getFillColor();
-    if (textPositionY < 100) {  // Верх экрана
-        color.a = static_cast<sf::Uint8>(255 * (textPositionY / 100));
-    } else if (textPositionY > 605) {  // Низ экрана
-        color.a = static_cast<sf::Uint8>(255 * ((705 - textPositionY) / 100));
-    } else {
-        color.a = 255;
-    }
-    crawlText.setFillColor(color);
 }
 
 void FAQScene::render(RenderWindow& window) {
@@ -110,3 +147,10 @@ void FAQScene::render(RenderWindow& window) {
         window.draw(btn);
     }
 }
+
+void FAQScene::play_sound() {
+    faq_sound.play();
+}
+
+
+
