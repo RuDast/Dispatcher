@@ -4,7 +4,7 @@
 using namespace sf;
 using namespace std;
 
-SettingsScene::SettingsScene() : prevNickname("Player")
+SettingsScene::SettingsScene() : savedNickname("Player"), currentNickname("Player")
 {
     if (!font.loadFromFile("../src/resources/font/main_font.ttf")) {
         cerr << "Error loading font" << endl;
@@ -12,14 +12,14 @@ SettingsScene::SettingsScene() : prevNickname("Player")
 
     // Кнопка назад
     btns_.push_back(Button({250, 120}, {50, 50}, "Back", font, [this]() {
-        resetNotification(); // Сбрасываем уведомление при выходе
+        resetNotification();
         if (back_btn_callback_) back_btn_callback_();
     }));
 
     // Кнопка сохранения
     btns_.push_back(Button({200, 50}, {150, 300}, "Save", font, [this]() {
-        if (!nickname.empty() && nickname != prevNickname) {
-            prevNickname = nickname;
+        if (!currentNickname.empty()) {
+            savedNickname = currentNickname; // Сохраняем только здесь!
             showNotification = true;
             notificationTimer = 2.0f;
         }
@@ -36,14 +36,13 @@ SettingsScene::SettingsScene() : prevNickname("Player")
     nicknameText.setCharacterSize(24);
     nicknameText.setFillColor(Color::Black);
     nicknameText.setPosition({110, 210});
-    nickname = "Player";
-    nicknameText.setString(nickname);
+    nicknameText.setString(currentNickname);
 
     // Настройка уведомления
     notificationText.setFont(font);
     notificationText.setCharacterSize(20);
     notificationText.setFillColor(Color::Green);
-    notificationText.setString("Nickname changed!");
+    notificationText.setString("Nickname saved!");
     notificationText.setPosition(150, 270);
     notificationText.setStyle(Text::Bold);
 }
@@ -72,14 +71,14 @@ void SettingsScene::handleInput(RenderWindow &window, const Event &event) {
     }
 
     if (event.type == Event::TextEntered && isTypingNickname) {
-        if (event.text.unicode == '\b' && !nickname.empty()) {
-            nickname.pop_back();
+        if (event.text.unicode == '\b' && !currentNickname.empty()) {
+            currentNickname.pop_back();
         } else if (event.text.unicode < 128 && event.text.unicode != '\r' && event.text.unicode != '\t') {
-            if (nickname.size() < 15) {
-                nickname += static_cast<char>(event.text.unicode);
+            if (currentNickname.size() < 15) {
+                currentNickname += static_cast<char>(event.text.unicode);
             }
         }
-        nicknameText.setString(nickname);
+        nicknameText.setString(currentNickname);
     }
 }
 
@@ -93,23 +92,20 @@ void SettingsScene::update(float deltaTime) {
 }
 
 void SettingsScene::render(RenderWindow &window) {
-    // Отрисовка кнопок
     for (auto &btn : btns_) {
         window.draw(btn);
     }
 
-    // Отрисовка поля ввода
     window.draw(nicknameBox);
     window.draw(nicknameText);
 
-    // Отрисовка уведомления
     if (showNotification) {
         window.draw(notificationText);
     }
 }
 
-void SettingsScene::createNickname(std::string &new_nickname) {
-    new_nickname = nickname;
+std::string SettingsScene::getNickname() const {
+    return savedNickname; // Возвращаем только сохраненный никнейм
 }
 
 void SettingsScene::setBackBtnCallback(const std::function<void()> &callback) {

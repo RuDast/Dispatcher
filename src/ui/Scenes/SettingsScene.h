@@ -12,14 +12,16 @@ public:
     void handleInput(sf::RenderWindow &window, const sf::Event &event) override;
     void update(float deltaTime) override;
     void render(sf::RenderWindow &window) override;
-    void createNickname(std::string &new_nickname);
+    std::string getNickname() const; // Новый метод вместо createNickname
 
 private:
     std::function<void()> back_btn_callback_;
     sf::Font font;
     std::vector<Button> btns_;
-    std::string nickname;
-    std::string prevNickname; // Для проверки изменений
+
+    // Для работы с никнеймом
+    std::string currentNickname; // Текущий вводимый ник
+    std::string savedNickname;   // Сохраненный ник (только после нажатия Save)
 
     // Элементы для ввода никнейма
     sf::Text nicknameText;
@@ -31,7 +33,7 @@ private:
     float notificationTimer = 0.f;
     bool showNotification = false;
 
-    void resetNotification(); // Сброс уведомления
+    void resetNotification();
 };
 
 #endif //SETTINGSSCENE_H
