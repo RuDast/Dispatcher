@@ -21,6 +21,9 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
     main_menu_scene_.setFAQBtnCallback([this]() {
     this->switchToFAQScene();
     });
+    main_menu_scene_.setLevSelCallback([this](const unsigned level) {
+        this->startLevel(level);
+    });
 
 
     rating_scene_.setBackBtnCallback([this]() {
@@ -31,10 +34,8 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
     });
     faq_scene_.setBackBtnCallback([this]() {
     this->switchToMainScene();
-});
-    main_menu_scene_.setLevSelCallback([this](const unsigned level) {
-        this->startLevel(level);
     });
+
     current_scene_ = &main_menu_scene_;
 
     run();
@@ -113,4 +114,7 @@ void Game::startLevel(unsigned level) {
 
     game_scene_ = new GameScene(window_, cfg);
     current_scene_ = game_scene_;
+    game_scene_->setBackBtnCallback([this]() {
+    this->switchToMainScene();
+    });
 }

@@ -11,9 +11,12 @@ class GameScene : public Scene {
     LevelConfig level_config_;
     Level level_;
     std::vector<Button> btns_;
-    sf::Font font_;
+    sf::Font font;
+    std::function<void()> back_btn_callback_;
 public:
     GameScene(sf::RenderWindow &window, const LevelConfig& config);
+
+    void setBackBtnCallback(const std::function<void()>& callback);
 
     void handleInput(sf::RenderWindow &window, const sf::Event &event) override;
 
