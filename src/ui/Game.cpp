@@ -2,6 +2,7 @@
 #include <iostream>
 #include "../core/structures.h"
 #include "../utils/Config.h"
+#include "Scenes/Rating.h"
 
 using namespace sf;
 using namespace std;
@@ -70,9 +71,9 @@ void Game::processEvents() {
 
         if (current_scene_) {
             if (current_scene_ != &settings_scene_)
-            current_scene_->handleInput(event);
+                current_scene_->handleInput(event);
             else
-                dynamic_cast<SettingsScene*>(current_scene_)->handleInput(window_, event);
+                dynamic_cast<SettingsScene *>(current_scene_)->handleInput(window_, event);
         }
     }
 }
@@ -105,6 +106,19 @@ void Game::update(const float dt) {
                 sound_wasted.play();
             } else if (game_scene_->isComplete()) {
                 // успех — планируем выход
+                auto all = Rating::getAllPlayers();
+                auto it  = std::find_if(all.begin(), all.end(),
+                            [&](auto &p){ return p.first == current_player_; });
+                int oldScore = (it != all.end() ? it->second : 0);
+                int newScore = oldScore + 1;
+
+                if (it != all.end()) {
+                    Rating::updatePlayerScore(current_player_, newScore);
+                } else {
+                    Rating::savePlayer(current_player_, newScore);
+                }
+                // ─────────────────────────────
+
                 pendingEnd_ = true;
                 endTimer_ = 2.0f;
                 game_status_ = GameStatus::Success;
@@ -112,6 +126,7 @@ void Game::update(const float dt) {
         }
     }
 }
+
 
 void Game::render() {
     window_.clear();
@@ -124,6 +139,7 @@ void Game::render() {
 
 void Game::switchToRatingScene() {
     current_scene_ = &rating_scene_;
+    rating_scene_.loadRatings();
 }
 
 void Game::switchToSettingsScene() {
@@ -139,6 +155,7 @@ void Game::switchToMainScene() {
 }
 
 void Game::startLevel(unsigned level) {
+    setPlayerName(settings_scene_.get_name());
     delete game_scene_;
     LevelConfig cfg1;
 
@@ -156,38 +173,38 @@ void Game::startLevel(unsigned level) {
 
     LevelConfig cfg2;
     cfg2.resources_ = {
-        { ResourceType::Type1, 5 },
-        { ResourceType::Type2, 7 },
-        { ResourceType::Type3, 4 }
+        {ResourceType::Type1, 5},
+        {ResourceType::Type2, 7},
+        {ResourceType::Type3, 4}
     };
     cfg2.processes_ = {
-        { 1, { 1, 2, 1 } },  // процесс 1: нужно 1×R1, 2×R2, 1×R3
-        { 2, { 2, 1, 1 } },  // процесс 2
-        { 3, { 3, 2, 2 } },  // процесс 3
-        { 4, { 4, 1, 3 } },  // процесс 4
-        { 5, { 2, 3, 1 } },  // процесс 5
-        { 6, { 1, 1, 2 } }   // процесс 6
+        {1, {1, 2, 1}}, // процесс 1: нужно 1×R1, 2×R2, 1×R3
+        {2, {2, 1, 1}}, // процесс 2
+        {3, {3, 2, 2}}, // процесс 3
+        {4, {4, 1, 3}}, // процесс 4
+        {5, {2, 3, 1}}, // процесс 5
+        {6, {1, 1, 2}} // процесс 6
     };
 
     // --- Конфиг третьего уровня: 5 типов ресурсов, 9 процессов ---
     LevelConfig cfg3;
     cfg3.resources_ = {
-        { ResourceType::Type1, 10 },
-        { ResourceType::Type2, 8  },
-        { ResourceType::Type3, 6  },
-        { ResourceType::Type4, 7  },
-        { ResourceType::Type5, 5  }
+        {ResourceType::Type1, 10},
+        {ResourceType::Type2, 8},
+        {ResourceType::Type3, 6},
+        {ResourceType::Type4, 7},
+        {ResourceType::Type5, 5}
     };
     cfg3.processes_ = {
-        { 1, { 2, 1, 1, 0, 2 } },
-        { 2, { 1, 2, 0, 1, 1 } },
-        { 3, { 3, 1, 2, 1, 0 } },
-        { 4, { 0, 1, 1, 2, 2 } },
-        { 5, { 1, 0, 2, 1, 1 } },
-        { 6, { 2, 2, 1, 0, 1 } },
-        { 7, { 1, 1, 1, 1, 1 } },
-        { 8, { 0, 2, 2, 1, 0 } },
-        { 9, { 1, 0, 1, 2, 2 } }
+        {1, {2, 1, 1, 0, 2}},
+        {2, {1, 2, 0, 1, 1}},
+        {3, {3, 1, 2, 1, 0}},
+        {4, {0, 1, 1, 2, 2}},
+        {5, {1, 0, 2, 1, 1}},
+        {6, {2, 2, 1, 0, 1}},
+        {7, {1, 1, 1, 1, 1}},
+        {8, {0, 2, 2, 1, 0}},
+        {9, {1, 0, 1, 2, 2}}
     };
 
     if (level == 1)
@@ -198,7 +215,7 @@ void Game::startLevel(unsigned level) {
         game_scene_ = new GameScene(window_, cfg3);
     current_scene_ = game_scene_;
     game_scene_->setBackBtnCallback([this]() {
-    this->switchToMainScene();
+        this->switchToMainScene();
     });
 }
 
@@ -207,4 +224,8 @@ void Game::endLevel() {
     game_scene_ = nullptr;
     main_menu_scene_.reset();
     current_scene_ = &main_menu_scene_;
+}
+
+void Game::setPlayerName(const std::string &name) {
+    current_player_ = name;
 }

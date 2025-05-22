@@ -1,0 +1,3 @@
+Gay 0
+Gay 1
+Player 1
