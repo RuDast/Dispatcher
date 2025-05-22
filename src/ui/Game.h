@@ -7,6 +7,7 @@
 #include "Scenes/MainMenuScene.h"
 #include "Scenes/RatingScene.h"
 #include "Scenes/SettingsScene.h"
+#include "SFML/Audio.hpp"
 
 enum class GameStatus {
     None = 0,
@@ -33,6 +34,9 @@ class Game {
     float test_timer_ = 0;
 
     GameStatus game_status_= GameStatus::None;
+
+    sf::SoundBuffer buffer;
+    sf::Sound sound_wasted;
 
 public:
     Game();
