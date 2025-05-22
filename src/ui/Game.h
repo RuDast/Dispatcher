@@ -38,6 +38,7 @@ class Game {
     sf::SoundBuffer buffer;
     sf::Sound sound_wasted;
 
+
 public:
     Game();
 

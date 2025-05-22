@@ -3,6 +3,7 @@
 
 #include "../Scene.h"
 #include "../../utils/Button.h"
+#include <SFML/Audio.hpp>
 #include <vector>
 #include <string>
 
@@ -14,9 +15,12 @@ public:
     void update(float deltaTime) override;
     void render(sf::RenderWindow& window) override;
 
+    void play_sound();
 private:
     void initCrawlText();
     bool loadTextFromFile(const std::string& path); // Новая функция загрузки
+
+
 
     sf::Font font;
     std::function<void()> back_btn_callback_;
@@ -27,6 +31,11 @@ private:
     float textPositionY;
     float crawlSpeed = 50.f;
     std::vector<std::string> crawlLines; // Теперь загружается из файла
+
+    // Музыка
+    sf::SoundBuffer buffer_faq;
+    sf::Sound faq_sound;
+    bool musicPlaying = false; // Флаг воспроизведения
 };
 
 #endif // FAQSCENE_H

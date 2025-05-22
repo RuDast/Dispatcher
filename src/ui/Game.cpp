@@ -45,6 +45,8 @@ Game::Game() : window_(VideoMode(game::win_width, game::win_height),
     buffer.loadFromFile("../src/resources/sounds/wasted.wav");
     sound_wasted.setBuffer(buffer);
 
+
+
     current_scene_ = &main_menu_scene_;
 
     run();
@@ -132,6 +134,7 @@ void Game::switchToSettingsScene() {
 
 void Game::switchToFAQScene() {
     current_scene_ = &faq_scene_;
+    faq_scene_.play_sound();
 }
 
 void Game::switchToMainScene() {

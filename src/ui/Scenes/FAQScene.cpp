@@ -1,5 +1,4 @@
 #include "FAQScene.h"
-
 #include <fstream>
 #include <iostream>
 
@@ -13,7 +12,10 @@ FAQScene::FAQScene() {
 
     // Кнопка назад (правый верхний угол с отступом 20px)
     btns_.push_back(Button({250, 50}, {1200 - 250 - 20, 20}, "Back", font, [this]() {
-        if (back_btn_callback_) back_btn_callback_();
+        if (back_btn_callback_) {
+            back_btn_callback_();
+            faq_sound.stop();
+        }
     }));
 
     // Загружаем текст из файла
@@ -34,8 +36,11 @@ FAQScene::FAQScene() {
             "A: Progress saves automatically"
         };
     }
+    buffer_faq.loadFromFile("../src/resources/sounds/snd.mp3");
+    faq_sound.setBuffer(buffer_faq);
 
     initCrawlText();
+
 }
 bool FAQScene::loadTextFromFile(const std::string& path) {
     ifstream file(path);
@@ -91,6 +96,17 @@ void FAQScene::handleInput(const Event& event) {
             crawlSpeed = max(10.f, crawlSpeed - 20.f);
         }
     }
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::M) { // M - mute/unmute
+            if (musicPlaying) {
+                faq_sound.pause();
+                musicPlaying = false;
+            } else {
+                faq_sound.play();
+                musicPlaying = true;
+            }
+        }
+    }
 }
 
 void FAQScene::update(float deltaTime) {
@@ -131,3 +147,10 @@ void FAQScene::render(RenderWindow& window) {
         window.draw(btn);
     }
 }
+
+void FAQScene::play_sound() {
+    faq_sound.play();
+}
+
+
+
