@@ -4,36 +4,109 @@
 using namespace sf;
 using namespace std;
 
-FAQScene::FAQScene()
-{
-    font.loadFromFile("../src/resources/font/main_font.ttf");
-    btns_.push_back(Button({250, 120},
-                           {50, 50},
-                           "Back",
-                           font,
-                           [this]() {
-                               if (back_btn_callback_) back_btn_callback_();
-                           }));
+FAQScene::FAQScene() {
+    if (!font.loadFromFile("../src/resources/font/main_font.ttf")) {
+        cerr << "Error loading FAQ font" << endl;
+    }
+
+    // Кнопка назад (правый верхний угол с отступом 20px)
+    btns_.push_back(Button({250, 50}, {1200 - 250 - 20, 20}, "Back", font, [this]() {
+        if (back_btn_callback_) back_btn_callback_();
+    }));
+
+    // Инициализация текста
+    initCrawlText();
 }
 
-void FAQScene::setBackBtnCallback(const std::function<void()> &callback)
-{
+void FAQScene::initCrawlText() {
+    crawlText.setFont(font);
+    crawlText.setCharacterSize(28);  // Увеличим размер для лучшей читаемости
+    crawlText.setFillColor(sf::Color(255, 215, 0));  // Золотой цвет
+    crawlText.setOutlineColor(sf::Color::Black);
+    crawlText.setOutlineThickness(1.f);
+
+    // Собираем весь текст в одну строку с переносами
+    string fullText;
+    for (const auto& line : crawlLines) {
+        fullText += line + "\n";
+    }
+    crawlText.setString(fullText);
+
+    // Центрируем по горизонтали
+    FloatRect textBounds = crawlText.getLocalBounds();
+    crawlText.setOrigin(textBounds.width/2, 0);
+    crawlText.setPosition(1200/2, 705);  // Центр по X, начинаем снизу экрана
+    textPositionY = 705;  // Стартовая позиция (низ экрана)
+}
+
+void FAQScene::setBackBtnCallback(const std::function<void()>& callback) {
     back_btn_callback_ = callback;
 }
 
-
-void FAQScene::handleInput(const Event &event) {
-    for (auto &btn: btns_) {
+void FAQScene::handleInput(const Event& event) {
+    for (auto& btn : btns_) {
         btn.handleEvent(event);
+    }
+
+    // Ускорение/замедление прокрутки по клавишам
+    if (event.type == Event::KeyPressed) {
+        if (event.key.code == Keyboard::Up) {
+            crawlSpeed += 20.f;
+        } else if (event.key.code == Keyboard::Down) {
+            crawlSpeed = max(10.f, crawlSpeed - 20.f);
+        }
     }
 }
 
 void FAQScene::update(float deltaTime) {
-    //cerr << "[DEBUG] SettingsScene::update();" << endl;
+    // Двигаем текст вверх
+    textPositionY -= crawlSpeed * deltaTime;
+    crawlText.setPosition(1200/2, textPositionY);  // Всегда по центру X
+
+    // Если текст полностью ушел вверх, начинаем заново
+    if (textPositionY < -crawlText.getLocalBounds().height) {
+        textPositionY = 705;
+    }
+
+    // Перспективный эффект (масштабирование)
+    float scale = 1.0f + (705 - textPositionY) / 1400.f;  // Плавное увеличение
+    crawlText.setScale(scale, scale);
+
+    // Плавное появление/исчезновение у границ
+    sf::Color color = crawlText.getFillColor();
+    if (textPositionY < 100) {  // Верх экрана
+        color.a = static_cast<sf::Uint8>(255 * (textPositionY / 100));
+    } else if (textPositionY > 605) {  // Низ экрана
+        color.a = static_cast<sf::Uint8>(255 * ((705 - textPositionY) / 100));
+    } else {
+        color.a = 255;
+    }
+    crawlText.setFillColor(color);
 }
 
-void FAQScene::render(RenderWindow &window) {
-    for (auto &btn: btns_) {
+void FAQScene::render(RenderWindow& window) {
+    // Очищаем экран (тёмно-синий для космического фона)
+    window.clear(sf::Color(10, 10, 30));
+
+    // Рисуем звёзды (если есть)
+    static vector<sf::CircleShape> stars;
+    if (stars.empty()) {
+        for (int i = 0; i < 150; ++i) {
+            sf::CircleShape star(rand() % 2 + 1);
+            star.setPosition(rand() % 1200, rand() % 705);  // На весь экран
+            star.setFillColor(sf::Color(200 + rand() % 55, 200 + rand() % 55, 200 + rand() % 55));
+            stars.push_back(star);
+        }
+    }
+    for (auto& star : stars) {
+        window.draw(star);
+    }
+
+    // Рисуем текст
+    window.draw(crawlText);
+
+    // Рисуем кнопки поверх всего
+    for (auto& btn : btns_) {
         window.draw(btn);
     }
 }

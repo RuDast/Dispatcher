@@ -1,27 +1,29 @@
+// RatingScene.h
 #ifndef RATINGSCENE_H
 #define RATINGSCENE_H
+
 #include "../Scene.h"
 #include "../../utils/Button.h"
+#include <vector>
+#include <string>
 
 class RatingScene : public Scene {
 public:
     RatingScene();
-
     void setBackBtnCallback(const std::function<void()>& callback);
-
-    void handleInput(const sf::Event &event) override;
-
+    void handleInput(const sf::Event &event);
     void update(float deltaTime) override;
-
     void render(sf::RenderWindow &window) override;
-
+    void refreshRatings();
 private:
+    void loadRatings();
+
     sf::Font font;
     std::function<void()> back_btn_callback_;
     std::vector<Button> btns_;
-    sf::Text authNotificationText;
-    bool showAuthNotification = false;
-    float authNotificationTimer = 0.f;
+    std::vector<sf::Text> ratingTexts;
+    std::vector<std::string> nicknames;
+    sf::Text titleText;
 };
 
-#endif //RATINGSCENE_H
+#endif // RATINGSCENE_H
