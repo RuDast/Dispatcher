@@ -87,6 +87,10 @@ void SettingsScene::handleInput(const sf::Event &event) {
     cout << "Test" << endl;
 }
 
+const std::string & SettingsScene::get_name() const {
+    return currentNickname;
+}
+
 void SettingsScene::handleInput(RenderWindow &window, const Event &event) {
     // Обработка кнопок
     for (auto &btn : btns_) {

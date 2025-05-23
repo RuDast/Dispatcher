@@ -71,3 +71,5 @@ void Rating::clearRatings() {
     std::ofstream file(RATING_FILE_PATH, std::ios::trunc);
     file.close();
 }
+
+

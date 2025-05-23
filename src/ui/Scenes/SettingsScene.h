@@ -39,6 +39,7 @@ private:
 
 public:
     void handleInput(const sf::Event &event) override;
+    const std::string& get_name() const;
 };
 
 #endif //SETTINGSSCENE_H

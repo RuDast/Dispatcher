@@ -38,6 +38,7 @@ class Game {
     sf::SoundBuffer buffer;
     sf::Sound sound_wasted;
 
+    std::string current_player_;
 
 public:
     Game();
@@ -61,6 +62,8 @@ public:
     void startLevel(unsigned level);
 
     void endLevel();
+
+    void setPlayerName(const std::string& name);
 };
 
 

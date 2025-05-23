@@ -15,8 +15,9 @@ public:
     void update(float deltaTime) override;
     void render(sf::RenderWindow &window) override;
     void refreshRatings();
-private:
     void loadRatings();
+private:
+
 
     sf::Font font;
     std::function<void()> back_btn_callback_;

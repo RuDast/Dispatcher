@@ -13,6 +13,7 @@ public:
     static void updatePlayerScore(const std::string& nickname, int newScore);
     static void clearRatings();
 
+
 private:
     static const std::string RATING_FILE_PATH;
     static std::vector<std::pair<std::string, int>> readAllPlayers();

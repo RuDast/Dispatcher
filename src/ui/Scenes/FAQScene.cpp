@@ -36,7 +36,7 @@ FAQScene::FAQScene() {
             "A: Progress saves automatically"
         };
     }
-    buffer_faq.loadFromFile("../src/resources/sounds/snd.mp3");
+    buffer_faq.loadFromFile("../src/resources/sounds/snd.wav");
     faq_sound.setBuffer(buffer_faq);
 
     initCrawlText();
