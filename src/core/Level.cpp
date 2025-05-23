@@ -104,7 +104,7 @@ void Level::draw(RenderWindow &win, const Font &font) const {
     resources_.size() == 5 ? CELL_WIDTH = 100.f: ORIGIN_Y = 150.f;
     const float ORIGIN_X = (1200 - CELL_WIDTH*(resources_.size()+1))/2.0f;
     constexpr float CELL_HEIGHT = 40.f;
-    const Color GRID_COLOR(200, 200, 200);
+    const Color GRID_COLOR(0, 0,0);
     const Color TEXT_COLOR(50, 50, 50);
 
     size_t R = resources_.size();

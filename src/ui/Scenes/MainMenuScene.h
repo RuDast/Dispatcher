@@ -17,6 +17,8 @@ private:
     std::function<void()> settings_button_callback_;
     std::function<void()> faq_button_callback_;
     sf::RectangleShape background_;
+    sf::Text gameTitle_;
+
 public:
     void setRatingBtnCallback(const std::function<void()>& callback);
 

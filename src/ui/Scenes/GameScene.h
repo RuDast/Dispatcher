@@ -22,6 +22,8 @@ class GameScene : public Scene {
     int            lastAmount = 0;
     sf::Text timerText;
     std::function<void()> back_btn_callback_;
+    sf::RectangleShape background_;
+
 public:
     GameScene(sf::RenderWindow &window, const LevelConfig& config);
 

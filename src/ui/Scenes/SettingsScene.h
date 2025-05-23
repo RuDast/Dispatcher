@@ -28,6 +28,8 @@ private:
     sf::RectangleShape nicknameBox;
     bool isTypingNickname = false;
 
+    sf::RectangleShape background_;
+
     // Для уведомления
     sf::Text notificationText;
     float notificationTimer = 0.f;

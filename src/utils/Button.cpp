@@ -19,7 +19,7 @@ Button::Button(const sf::Vector2f &size,
         position.y + size.y / 2
     );
 
-    buffer_.loadFromFile("../resources/sounds/click.wav");
+    buffer_.loadFromFile("../resources/sounds/clicks.wav");
     sound.setBuffer(buffer_);
 
 }

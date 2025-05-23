@@ -11,6 +11,9 @@ RatingScene::RatingScene() {
         std::cerr << "Error loading font in RatingScene" << std::endl;
     }
 
+    background_.setSize(sf::Vector2f(1280, 720));
+    background_.setFillColor(sf::Color(153, 204, 255));
+
     // Кнопка назад
     btns_.push_back(Button({250, 120}, {50, 50}, "Back", font, [this]() {
         if (back_btn_callback_) back_btn_callback_();
@@ -118,6 +121,7 @@ void RatingScene::update(float deltaTime) {
 
 void RatingScene::render(sf::RenderWindow &window) {
     window.draw(titleText);
+    window.draw(background_);
 
     for (auto &btn: btns_) {
         window.draw(btn);

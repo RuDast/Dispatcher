@@ -6,8 +6,10 @@ using namespace sf;
 using namespace std;
 
 GameScene::GameScene(RenderWindow &window, const LevelConfig &config) : window_(window),
-                                                                        level_config_(config)
-{
+                                                                        level_config_(config) {
+    background_.setSize(Vector2f(1280, 720));
+    background_.setFillColor(Color(153, 204, 255));
+
     font_.loadFromFile("../src/resources/font/main_font.ttf");
     level_ = make_unique<Level>(level_config_);
     btns_.push_back(Button({250, 120},
@@ -65,6 +67,7 @@ void GameScene::update(float deltaTime) {
 
 void GameScene::render(RenderWindow &window) {
 
+    window.draw(background_);
 
     level_->draw(window, font_);
 

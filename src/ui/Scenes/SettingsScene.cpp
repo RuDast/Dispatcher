@@ -9,6 +9,8 @@ SettingsScene::SettingsScene() : savedNickname("Player"), currentNickname("Playe
     if (!font.loadFromFile("../src/resources/font/main_font.ttf")) {
         cerr << "Error loading font" << endl;
     }
+    background_.setSize(Vector2f(1280, 720));
+    background_.setFillColor(Color(153, 204, 255));
 
     // Кнопка назад
     btns_.push_back(Button({250, 120}, {50, 50}, "Back", font, [this]() {
@@ -137,9 +139,12 @@ void SettingsScene::update(float deltaTime) {
 }
 
 void SettingsScene::render(RenderWindow &window) {
+    window.draw(background_);
+
     for (auto &btn : btns_) {
         window.draw(btn);
     }
+
 
     window.draw(nicknameBox);
     window.draw(nicknameText);

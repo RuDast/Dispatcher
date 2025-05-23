@@ -25,6 +25,7 @@ private:
     std::vector<sf::Text> ratingTexts;
     std::vector<std::string> nicknames;
     sf::Text titleText;
+    sf::RectangleShape background_;
 };
 
 #endif // RATINGSCENE_H
