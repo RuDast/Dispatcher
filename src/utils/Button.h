@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics.hpp>
 #include <functional>
+#include <SFML/Audio/Sound.hpp>
+#include <SFML/Audio/SoundBuffer.hpp>
 
 class Button : public sf::Drawable {
 public:
@@ -24,6 +26,9 @@ private:
     sf::Text           text;
     std::function<void()> onClick;
     sf::Font font;
+
+    sf::SoundBuffer buffer_;
+    sf::Sound sound;
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override
     {
